@@ -62,8 +62,18 @@ def create_accounts():
 ######################################################################
 
 # ... place you code here to LIST accounts ...
-
-
+@app.route("/accounts", methods=["GET"])
+def list_all_accounts():
+    """
+    Lists all accounts
+    """
+    app.logger.info("Retrieving all accounts")
+    found_results = Account.all()
+    account_list = []
+    for account in found_results:
+        account_list.append(account.serialize())
+    app.logger.info("Number of accounts retrieved are [%s]", len(account_list))
+    return jsonify(account_list), status.HTTP_200_OK
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
@@ -85,7 +95,18 @@ def read_account(id):
 ######################################################################
 
 # ... place you code here to UPDATE an account ...
-
+@app.route("/accounts/<int:id>", methods=["PUT"])
+def update_account(id):
+    """
+    Updates an account
+    """
+    app.logger.info("Request to Update an account with id:[%s]", id)
+    found_results = Account.find(id)
+    if not found_results:
+        abort(status.HTTP_404_NOT_FOUND, f"The requested account with [{id}] was not found.")
+    found_results.deserialize(request.get_json())
+    found_results.update()
+    return found_results.serialize(), status.HTTP_200_OK
 
 ######################################################################
 # DELETE AN ACCOUNT
@@ -93,7 +114,16 @@ def read_account(id):
 
 # ... place you code here to DELETE an account ...
 
-
+@app.route("/accounts/<int:id>", methods=["DELETE"])
+def delete_user(id):
+    """
+    Deletes a user account
+    """
+    app.logger.info("Request to Delete a user account with product id: [%s]", id)
+    found_results = Account.find(id)
+    if found_results:
+        found_results.delete()
+    return "", status.HTTP_204_NO_CONTENT
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
