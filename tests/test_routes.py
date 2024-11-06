@@ -189,7 +189,7 @@ class TestAccountService(TestCase):
         """ It should not allow an illegal method call """
         response = self.client.delete(f"{BASE_URL}")
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-  
+
     def test_security_headers(self):
         """ It should return security headers"""
         response = self.client.get("/", environ_overrides=HTTPS_ENVIRON)
@@ -208,4 +208,3 @@ class TestAccountService(TestCase):
         response = self.client.get("/", environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
-  
